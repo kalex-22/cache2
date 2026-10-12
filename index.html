@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cache Memory Simulator</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+  <header class="page-header">
+    <div>
+      <p class="eyebrow">COMPUTER ARCHITECTURE LAB</p>
+      <h1>Cache Memory Simulator</h1>
+      <p class="sub">Configure a cache, run a memory trace, and inspect hits, misses, memory traffic, and average access time. Trace entries are reads by default; use <code>W:address</code> for writes.</p>
+    </div>
+    <button id="themeToggle" class="theme-toggle" type="button" aria-label="Switch to dark mode">☾ <span>Dark mode</span></button>
+  </header>
+ 
+  <div class="card">
+    <h2>Settings</h2>
+    <div class="grid">
+      <div><label>Cache size (bytes)</label><input id="size" type="number" value="64"></div>
+      <div><label>Block size (bytes)</label><input id="block" type="number" value="16"></div>
+      <div><label>Associativity (ways)</label><input id="assoc" type="number" value="1"></div>
+      <div><label>Replacement policy</label>
+        <select id="policy"><option>LRU</option><option>FIFO</option></select></div>
+      <div><label>Hit time (cycles)</label><input id="ht" type="number" value="1"></div>
+      <div><label>Miss penalty (cycles)</label><input id="mp" type="number" value="100"></div>
+      <div><label>Memory write penalty (cycles)</label><input id="wp" type="number" value="100"></div>
+      <div><label>Write policy</label><select id="writePolicy"><option value="back">Write-back</option><option value="through">Write-through</option></select></div>
+      <div><label>Write miss policy</label><select id="writeAllocate"><option value="allocate">Write-allocate</option><option value="no-allocate">No-write-allocate</option></select></div>
+    </div>
+    <div class="info" id="geo"></div>
+ 
+    <h2 style="margin-top:14px">Memory access trace</h2>
+    <div class="grid" style="grid-template-columns:1fr 160px;align-items:end">
+      <textarea id="trace">0, 4, 16, 0, 64, 0</textarea>
+      <div><label>Address format</label>
+        <select id="fmt"><option value="10">Decimal</option><option value="16">Hex</option></select></div>
+    </div>
+    <div class="row">
+      <button class="primary" id="run">Run simulation</button>
+      <button data-p="hand">Hand test</button>
+      <button data-p="seq">Sequential</button>
+      <button data-p="loop">Array loop</button>
+      <button data-p="rand">Random</button>
+    </div>
+    <div class="err" id="err"></div>
+  </div>
+ 
+  <div class="card">
+    <h2>Results</h2>
+    <div class="info" id="runSummary" aria-live="polite">No simulation run yet.</div>
+    <div class="stats">
+      <div class="stat"><b id="sHit">-</b><span>Hit rate</span></div>
+      <div class="stat"><b id="sMiss">-</b><span>Miss rate</span></div>
+      <div class="stat"><b id="sCnt">-</b><span>Hits / Misses</span></div>
+      <div class="stat"><b id="sAmat">-</b><span>AMAT (cycles)</span></div>
+      <div class="stat"><b id="sMem">-</b><span>Memory reads / writes</span></div>
+      <div class="stat"><b id="sDirty">-</b><span>Dirty evictions</span></div>
+    </div>
+  </div>
+ 
+  <div class="card">
+    <h2>Step through the trace</h2>
+    <div class="row" style="margin:0 0 12px">
+      <button id="prev">Prev</button>
+      <button id="next">Next</button>
+      <input id="slider" type="range" min="0" max="0" value="0" style="flex:1;min-width:120px;padding:0">
+      <span id="stepLbl" class="info" style="margin:0">Step 0</span>
+    </div>
+    <div class="scroll"><table id="cacheView"></table></div>
+    <div class="info">An asterisk marks a dirty block. AMAT includes configured memory read and write penalties and assumes serialized memory access.</div>
+  </div>
+ 
+  <div class="card">
+    <h2>Access log</h2>
+    <div class="scroll">
+      <table id="log">
+        <thead>
+          <tr><th>#</th><th>Operation</th><th>Address</th><th>Tag</th><th>Index</th><th>Offset</th><th>Result</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+</main>
+ 
+<script src="cache.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
+ 
